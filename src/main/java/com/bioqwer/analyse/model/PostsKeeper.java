@@ -1,4 +1,4 @@
-package com.bioqwer.analyse;
+package com.bioqwer.analyse.model;
 
 import java.util.List;
 import java.util.Objects;

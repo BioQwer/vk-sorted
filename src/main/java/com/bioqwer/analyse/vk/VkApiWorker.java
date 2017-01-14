@@ -1,4 +1,4 @@
-package com.bioqwer.analyse;
+package com.bioqwer.analyse.vk;
 
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,4 +1,4 @@
-package com.bioqwer.analyse;
+package com.bioqwer.analyse.rest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.bioqwer.analyse.model.PostsKeeper;
+import com.bioqwer.analyse.vk.VkApiWorker;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.wall.WallComment;

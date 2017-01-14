@@ -1,4 +1,4 @@
-package com.bioqwer.analyse;
+package com.bioqwer.analyse.config;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
