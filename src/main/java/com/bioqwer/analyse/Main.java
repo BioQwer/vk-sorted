@@ -1,13 +1,9 @@
 package com.bioqwer.analyse;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -18,7 +14,6 @@ import com.vk.api.sdk.objects.ServiceClientCredentialsFlowResponse;
 import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.wall.WallComment;
 import com.vk.api.sdk.objects.wall.WallpostFull;
-import com.vk.api.sdk.objects.wall.responses.GetCommentsResponse;
 import com.vk.api.sdk.objects.wall.responses.GetResponse;
 import com.vk.api.sdk.queries.wall.WallGetFilter;
 
@@ -44,23 +39,12 @@ public class Main {
 				.userAuthorizationCodeFlow(APP_ID,
 				                           CLIENT_SECRET,
 				                           "https://oauth.vk.com/blank.html",
-				                           auth.getAccessToken())
+				                           "000d4c34d00333e1ec")
 				.execute();
 
-		GetResponse getResponse = vk.wall().get()
-				.domain("mudakoff")
-				.filter(WallGetFilter.OWNER)
-				.count(1)
-				.offset(0)
-				.execute();
+		System.out.println(authResponse);
+		List<WallpostFull> items = getWallPost(vk);
 
-		List<WallpostFull> items = getResponse.getItems();
-
-		items.parallelStream()
-				.forEach(w -> {
-					List<WallComment> allComments = getAllWallComments(vk, w);
-					map.put(w, allComments);
-				});
 
 		Comparator<Integer> compare = Integer::compare;
 		final Comparator<Integer> reversed = compare.reversed();
@@ -89,36 +73,15 @@ public class Main {
 		});
 	}
 
-	private static List<WallComment> getAllWallComments(VkApiClient vk, WallpostFull w) {
-		Integer count = w.getComments().getCount();
-		int size = count / 100 + 1;
-		List<Integer> steps = IntStream.iterate(100, i -> i + 100)
-				.limit(size)
-				.boxed()
-				.collect(Collectors.toList());
+	private static List<WallpostFull> getWallPost(VkApiClient vk) throws ApiException, ClientException {
+		GetResponse getResponse = vk.wall().get()
+				.domain("mudakoff")
+				.filter(WallGetFilter.OWNER)
+				.count(1)
+				.offset(0)
+				.execute();
 
-		List<WallComment> comments = new CopyOnWriteArrayList<>();
-
-		return steps.parallelStream()
-				.map(x -> {
-					GetCommentsResponse commentsResponse = null;
-					try {
-						commentsResponse = vk.wall()
-								.getComments(w.getId())
-								.ownerId(w.getOwnerId())
-								.extended(true)
-								.count(100)
-								.offset(x - 100)
-								.needLikes(true)
-								.execute();
-					} catch (ApiException e) {
-						e.printStackTrace();
-					} catch (ClientException e) {
-						e.printStackTrace();
-					}
-					return commentsResponse.getItems();
-				})
-				.flatMap(Collection::stream)
-				.collect(Collectors.toList());
+		return getResponse.getItems();
 	}
+
 }
