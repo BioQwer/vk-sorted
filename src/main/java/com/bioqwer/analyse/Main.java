@@ -14,6 +14,8 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.ServiceClientCredentialsFlowResponse;
+import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.wall.WallComment;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.wall.responses.GetCommentsResponse;
@@ -22,6 +24,8 @@ import com.vk.api.sdk.queries.wall.WallGetFilter;
 
 public class Main {
 
+	private static final String CLIENT_SECRET = "YhhXgce0yrhyr3NqmztX";
+	private static final int APP_ID = 5804106;
 
 	private static Map<WallpostFull, List<WallComment>> map = new HashMap<>();
 
@@ -29,23 +33,24 @@ public class Main {
 		TransportClient transportClient = HttpTransportClient.getInstance();
 		VkApiClient vk = new VkApiClient(transportClient);
 
-		/*ServiceClientCredentialsFlowResponse auth = vk.oauth()
+		ServiceClientCredentialsFlowResponse auth = vk.oauth()
 				.serviceClientCredentialsFlow(APP_ID, CLIENT_SECRET)
 				.execute();
 
 		System.out.println(auth.getAccessToken());
 
-		*//*UserAuthResponse authResponse = vk.oauth()
+
+		UserAuthResponse authResponse = vk.oauth()
 				.userAuthorizationCodeFlow(APP_ID,
 				                           CLIENT_SECRET,
 				                           "https://oauth.vk.com/blank.html",
 				                           auth.getAccessToken())
-				.execute();*/
+				.execute();
 
 		GetResponse getResponse = vk.wall().get()
 				.domain("mudakoff")
 				.filter(WallGetFilter.OWNER)
-				.count(100)
+				.count(1)
 				.offset(0)
 				.execute();
 
